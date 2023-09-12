@@ -1,16 +1,20 @@
 import { useEffect, useState } from 'react'
 import { Table, Button } from 'react-bootstrap'
 import { completeTodo, deleteTodo, fetchAllTodo, inCompleteTodo } from '../service/TodoService'
+import { getToken } from '../service/AuthService'
 import { Link, useNavigate } from 'react-router-dom'
 
 const ListTodos = () => {
 
   const [todos, setTodos] = useState([])
 
+  const token = getToken()
   const fetchTodos = async () => {
-    const { data } = await fetchAllTodo()
+    
+    const { data } = await fetchAllTodo(token)
     setTodos(data)
   }
+
   useEffect(() => {
     fetchTodos()
   }, [])
@@ -22,7 +26,7 @@ const ListTodos = () => {
 
   const deleteTodoClick = async (todoId) => {
     try{
-      await deleteTodo(todoId)
+      await deleteTodo(todoId, token)
       fetchTodos()
     } catch (error){
       console.log("You are not authorised to perform this action")
@@ -30,12 +34,12 @@ const ListTodos = () => {
   }
 
   const markAsComplete = async (todoId) => {
-    await completeTodo(todoId)
+    await completeTodo(todoId, token)
     fetchTodos()
   }
 
   const markAsInComplete = async (todoId) => {
-    await inCompleteTodo(todoId)
+    await inCompleteTodo(todoId, token)
     fetchTodos()
   }
 

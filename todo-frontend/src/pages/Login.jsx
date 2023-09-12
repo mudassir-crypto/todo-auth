@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { Button, Card, Col, Row } from 'react-bootstrap'
-import { getLoggedInUser, getToken, isLoggedIn, loginUser, registerUser, saveLoggedInUser, setToken } from '../service/TodoService'
+import { getLoggedInUser, isLoggedIn, saveLoggedInUser, setToken } from '../service/AuthService'
+import { loginUser } from '../service/AuthService'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 const Login = () => {
 
@@ -22,18 +24,28 @@ const Login = () => {
     if(validateForm()){
       console.log({usernameOrEmail, password})
 
-      const {data, status} = await loginUser({usernameOrEmail, password})
-      console.log(data)
-      if(status === 200){
-        const token = 'Basic ' + window.btoa(`${usernameOrEmail}:${password}`)
-        setToken(token)
-        console.log(token)
-        console.log(window.atob(token.split(" ")[1]))
-        saveLoggedInUser(usernameOrEmail)
-        console.log(getLoggedInUser())
-        console.log(isLoggedIn())
-        navigator("/")
+      //const {data, status} = await loginUser({usernameOrEmail, password})
+      try {
+        //const { data } = await axios.post("http://localhost:8080/api/auth/login", {usernameOrEmail, password})
+        const {data, status} = await loginUser({usernameOrEmail, password})
+        console.log(data)
+
+        if(status === 200){
+          // const token = 'Basic ' + window.btoa(`${usernameOrEmail}:${password}`)
+          // setToken(token)
+          // console.log(token)
+          // console.log(window.atob(token.split(" ")[1]))
+          const token = await data.accessToken
+          setToken(token)
+          saveLoggedInUser(usernameOrEmail)
+          console.log(getLoggedInUser())
+          console.log(isLoggedIn())
+          navigator("/")
+        }
+      } catch (error) {
+        console.log(error)
       }
+      
     }
   }
 

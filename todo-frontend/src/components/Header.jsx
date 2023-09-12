@@ -2,7 +2,7 @@ import Container from 'react-bootstrap/Container'
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { isLoggedIn, logout } from '../service/TodoService'
+import { isLoggedIn, logout } from '../service/AuthService'
 
 const Header = () => {
 

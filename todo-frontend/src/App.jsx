@@ -5,7 +5,7 @@ import Footer from './components/Footer'
 import CreateUpdateTodo from './pages/CreateUpdateTodo'
 import Register from './pages/Register'
 import Login from './pages/Login'
-import { isLoggedIn } from './service/TodoService'
+import { isLoggedIn } from './service/AuthService'
 
 const App = () => {
 

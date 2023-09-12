@@ -1,12 +1,15 @@
 import axios from 'axios'
+import { getToken } from './AuthService'
 
 const BASE_URL = "http://localhost:8080/api/todo"
-const AUTH_BASE_URL = "http://localhost:8080/api/auth"
 
 
-// Add a request interceptor
+//Add a request interceptor
 axios.interceptors.request.use(function (config) {
-  config.headers["Authorization"] = getToken()
+  const token = getToken()
+  if(token){
+    config.headers["Authorization"] = `Bearer ${token}`
+  }
   return config
 }, function (error) {
   // Do something with request error
@@ -27,36 +30,5 @@ export const deleteTodo = async (todoId) => await axios.delete(`${BASE_URL}/${to
 export const completeTodo = async (todoId) => await axios.patch(`${BASE_URL}/${todoId}/complete`)
 export const inCompleteTodo = async (todoId) => await axios.patch(`${BASE_URL}/${todoId}/incomplete`)
 
-// auth
-export const registerUser = async (user) => await axios.post(`${AUTH_BASE_URL}/register`, user)
-export const loginUser = async (user) => await axios.post(`${AUTH_BASE_URL}/login`, user)
 
-export const setToken = (token) => sessionStorage.setItem("token", token)
-export const getToken = () => sessionStorage.getItem("token")
 
-export const saveLoggedInUser = (username) => sessionStorage.setItem("authenticatedUser", username)
-export const getLoggedInUser = () => sessionStorage.getItem("authenticatedUser")
-
-export const isLoggedIn = () => {
-  const token = getToken()
-  if(token){
-    const withoutBasic = window.atob(token.split(" ")[1])
-    const username = withoutBasic.split(":")[0]
-    
-    const authUser = getLoggedInUser()
-
-    if(username === authUser){
-      return true
-    } else {
-      return false
-    }
-  } else {
-    return false
-  }
-  
-}
-
-export const logout = () => {
-  sessionStorage.removeItem("authenticatedUser")
-  sessionStorage.removeItem("token")
-}

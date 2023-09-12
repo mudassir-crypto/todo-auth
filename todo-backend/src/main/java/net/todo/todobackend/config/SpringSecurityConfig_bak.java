@@ -2,9 +2,6 @@ package net.todo.todobackend.config;
 
 
 import lombok.AllArgsConstructor;
-import net.todo.todobackend.security.JwtAuthenticationEntryPoint;
-import net.todo.todobackend.security.JwtAuthenticationFilter;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,20 +17,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Configuration
-@EnableMethodSecurity
-@AllArgsConstructor
-public class SpringSecurityConfig {
+//@Configuration
+//@EnableMethodSecurity
+//@AllArgsConstructor
+public class SpringSecurityConfig_bak {
 
     private UserDetailsService userDetailsService;
 
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
-    
     @Bean
     public static PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -58,11 +51,6 @@ public class SpringSecurityConfig {
                 authorize.anyRequest().authenticated();
         })
             .httpBasic(Customizer.withDefaults());
-        
-        http.exceptionHandling(exception -> exception
-        		.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-        	);
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); 
 
         return http.build();
     }           // creates a form or header based auth

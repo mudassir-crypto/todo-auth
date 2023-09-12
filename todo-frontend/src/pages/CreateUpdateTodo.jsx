@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { createTodo, getTodo, updateTodo } from '../service/TodoService'
+import { getToken } from '../service/AuthService'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 const CreateUpdateTodo = () => {
@@ -19,10 +20,12 @@ const CreateUpdateTodo = () => {
   const nav = useLocation()
   const path = nav.pathname.split('/')[1]
 
+  const token = getToken()
+
   useEffect(() => {
     (async () => {
       if(path !== "add-todo"){
-        const { data } = await getTodo(id)
+        const { data } = await getTodo(id, token)
         setTitle(data.title)
         setDescription(data.description)
         setCompleted(data.completed)
@@ -62,7 +65,7 @@ const CreateUpdateTodo = () => {
     if(validateForm()){
       if(path === "add-todo"){
         try {
-          const { data } = await createTodo({ title, description, completed })
+          const { data } = await createTodo({ title, description, completed }, token)
           navigator('/')
           console.log(data)
         } catch (error) {
@@ -70,7 +73,7 @@ const CreateUpdateTodo = () => {
         }
       } else if(id) {
         try {
-          const { data } = await updateTodo(id, { title, description, completed })
+          const { data } = await updateTodo(id, { title, description, completed }, token)
           navigator('/')
           console.log(data)
         } catch (error) {
